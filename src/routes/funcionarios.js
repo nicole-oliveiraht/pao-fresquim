@@ -172,11 +172,25 @@ router.post('/:id/atestado', async (req, res) => {
       nome_arquivo = arquivo_nome;
     }
 
-    const result = await pool.query(
-      `INSERT INTO atestado (id_funcionario, data_atestado, observacoes, arquivo_path, arquivo_nome)
-       VALUES ($1,$2,$3,$4,$5) RETURNING *`,
-      [id_funcionario, data_atestado, observacoes || null, arquivo_path, nome_arquivo]
-    );
+    let result;
+    try {
+      result = await pool.query(
+        `INSERT INTO atestado (id_funcionario, data_atestado, observacoes, arquivo_path, arquivo_nome)
+         VALUES ($1,$2,$3,$4,$5) RETURNING *`,
+        [id_funcionario, data_atestado, observacoes || null, arquivo_path, nome_arquivo]
+      );
+    } catch (colErr) {
+      // Fallback: coluna arquivo_nome pode não existir em bancos antigos
+      if (colErr.message && colErr.message.includes('arquivo_nome')) {
+        result = await pool.query(
+          `INSERT INTO atestado (id_funcionario, data_atestado, observacoes, arquivo_path)
+           VALUES ($1,$2,$3,$4) RETURNING *`,
+          [id_funcionario, data_atestado, observacoes || null, arquivo_path]
+        );
+      } else {
+        throw colErr;
+      }
+    }
     res.status(201).json({ ok: true, atestado: result.rows[0] });
   } catch (err) {
     console.error('[POST /funcionarios/:id/atestado]', err.message);

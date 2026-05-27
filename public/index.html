@@ -407,6 +407,9 @@ body {
 .user-dd-btn:last-child { border-bottom: none; }
 .user-dd-btn:hover { background: var(--cream); }
 .user-dd-sair { color: var(--rust); font-weight: 700; }
+.pag-wrap { display:none;align-items:center;justify-content:center;gap:12px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border); }
+.pag-wrap button { padding:6px 14px;font-size:13px; }
+.pag-info { font-size:13px;color:var(--ink-lt);min-width:110px;text-align:center; }
 
 .btn-back {
   background: rgba(255,255,255,0.12);
@@ -1946,6 +1949,11 @@ body {
               <tbody id="rel-vendas-tbody"></tbody>
             </table>
           </div>
+          <div id="rel-vendas-pag-wrap" class="pag-wrap">
+            <button class="btn-sec" id="rel-vendas-pag-prev" onclick="mudarPaginaRelVendas(-1)">← Anterior</button>
+            <span id="rel-vendas-pag-info" class="pag-info">Página 1 de 1</span>
+            <button class="btn-sec" id="rel-vendas-pag-next" onclick="mudarPaginaRelVendas(1)">Próxima →</button>
+          </div>
         </div>
       </div>
 
@@ -2330,6 +2338,11 @@ body {
           </thead>
           <tbody id="nf-tbody"></tbody>
         </table>
+      </div>
+      <div id="nf-pag-wrap" class="pag-wrap">
+        <button class="btn-sec" id="nf-pag-prev" onclick="mudarPaginaNF(-1)">← Anterior</button>
+        <span id="nf-pag-info" class="pag-info">Página 1 de 1</span>
+        <button class="btn-sec" id="nf-pag-next" onclick="mudarPaginaNF(1)">Próxima →</button>
       </div>
     </div>
 
@@ -4054,6 +4067,10 @@ const _pgtoLabel = { pix:'📱 Pix', dinheiro:'💵 Dinheiro', debito:'💳 Déb
 async function carregarNF() { await buscarNotas(); }
 
 let _notasCache = []; // cache para imprimirTodas
+let _nfPage = 1;
+let _relVendasAll = [];
+let _relVendasPage = 1;
+const _PER_PAGE = 15;
 
 async function buscarNotas() {
   const de    = document.getElementById('nf-de').value;
@@ -4095,7 +4112,18 @@ async function buscarNotas() {
   if(elValor) elValor.textContent = fmtMoeda(totalValor);
   if(elTick)  elTick.textContent  = fmtMoeda(ticket);
 
-  document.getElementById('nf-tbody').innerHTML = notas.map(n=>`
+  _nfPage = 1;
+  renderNFPage();
+}
+
+function renderNFPage() {
+  const perPage = _PER_PAGE;
+  const total = _notasCache.length;
+  const totalPages = Math.max(1, Math.ceil(total / perPage));
+  _nfPage = Math.min(Math.max(1, _nfPage), totalPages);
+  const start = (_nfPage - 1) * perPage;
+  const slice = _notasCache.slice(start, start + perPage);
+  document.getElementById('nf-tbody').innerHTML = slice.map(n=>`
     <tr>
       <td><strong style="font-family:monospace">#${String(n.id_venda).padStart(6,'0')}</strong></td>
       <td>${fmtData(n.data_hora)} ${new Date(n.data_hora).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</td>
@@ -4107,6 +4135,48 @@ async function buscarNotas() {
         <button class="btn-editar" onclick="abrirModalNF(${JSON.stringify(n).replace(/"/g,'&quot;')})">🧾 Ver / Imprimir</button>
       </td>
     </tr>`).join('');
+  const wrap = document.getElementById('nf-pag-wrap');
+  if(wrap) {
+    wrap.style.display = total > perPage ? 'flex' : 'none';
+    document.getElementById('nf-pag-info').textContent = `Página ${_nfPage} de ${totalPages}`;
+    document.getElementById('nf-pag-prev').disabled = _nfPage <= 1;
+    document.getElementById('nf-pag-next').disabled = _nfPage >= totalPages;
+  }
+}
+
+function mudarPaginaNF(dir) {
+  _nfPage += dir;
+  renderNFPage();
+}
+
+function renderRelVendasPage() {
+  const perPage = _PER_PAGE;
+  const total = _relVendasAll.length;
+  const totalPages = Math.max(1, Math.ceil(total / perPage));
+  _relVendasPage = Math.min(Math.max(1, _relVendasPage), totalPages);
+  const start = (_relVendasPage - 1) * perPage;
+  const slice = _relVendasAll.slice(start, start + perPage);
+  const vendasBody = document.getElementById('rel-vendas-tbody');
+  if(vendasBody) vendasBody.innerHTML = slice.map(v=>`
+    <tr>
+      <td>${fmtData(v.data_hora)} ${new Date(v.data_hora).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</td>
+      <td><strong>${v.funcionario||'—'}</strong></td>
+      <td>${v.cliente||'<span style="color:var(--ink-lt)">Consumidor Final</span>'}</td>
+      <td>${_pgtoLabel[(v.forma_pagamento||'').toLowerCase()]||v.forma_pagamento}</td>
+      <td><strong style="color:var(--sage)">${fmtMoeda(v.total)}</strong></td>
+    </tr>`).join('');
+  const wrap = document.getElementById('rel-vendas-pag-wrap');
+  if(wrap) {
+    wrap.style.display = total > perPage ? 'flex' : 'none';
+    document.getElementById('rel-vendas-pag-info').textContent = `Página ${_relVendasPage} de ${totalPages}`;
+    document.getElementById('rel-vendas-pag-prev').disabled = _relVendasPage <= 1;
+    document.getElementById('rel-vendas-pag-next').disabled = _relVendasPage >= totalPages;
+  }
+}
+
+function mudarPaginaRelVendas(dir) {
+  _relVendasPage += dir;
+  renderRelVendasPage();
 }
 
 function imprimirTodas() {
@@ -4756,15 +4826,11 @@ gerarRelatorio = async function() {
           <td>${f.qtd_vendas}</td>
           <td><strong style="color:var(--sage)">${fmtMoeda(f.receita)}</strong></td>
         </tr>`).join('');
-      const vendasBody = document.getElementById('rel-vendas-tbody');
-      if(vendasBody && data.ultimasVendas) vendasBody.innerHTML = data.ultimasVendas.map(v=>`
-        <tr>
-          <td>${fmtData(v.data_hora)} ${new Date(v.data_hora).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</td>
-          <td><strong>${v.funcionario||'—'}</strong></td>
-          <td>${v.cliente||'<span style="color:var(--ink-lt)">Consumidor Final</span>'}</td>
-          <td>${_pgtoLabel[(v.forma_pagamento||'').toLowerCase()]||v.forma_pagamento}</td>
-          <td><strong style="color:var(--sage)">${fmtMoeda(v.total)}</strong></td>
-        </tr>`).join('');
+      if(data.ultimasVendas) {
+        _relVendasAll = data.ultimasVendas;
+        _relVendasPage = 1;
+        renderRelVendasPage();
+      }
     }
   } catch(_) {
     // Dados demo para ranking
@@ -4773,10 +4839,12 @@ gerarRelatorio = async function() {
       <tr><td><strong style="color:var(--caramel-dk)">#1</strong></td><td><strong>🏆 Maria da Silva</strong></td><td>58</td><td><strong style="color:var(--sage)">${fmtMoeda(820.50)}</strong></td></tr>
       <tr><td><strong style="color:var(--caramel-dk)">#2</strong></td><td><strong>Ana Oliveira</strong></td><td>47</td><td><strong style="color:var(--sage)">${fmtMoeda(640.00)}</strong></td></tr>
       <tr><td><strong style="color:var(--caramel-dk)">#3</strong></td><td><strong>Carlos Santos</strong></td><td>37</td><td><strong style="color:var(--sage)">${fmtMoeda(389.90)}</strong></td></tr>`;
-    const vendasBody = document.getElementById('rel-vendas-tbody');
-    if(vendasBody) vendasBody.innerHTML = `
-      <tr><td>26/05/2026 10:30</td><td><strong>Maria da Silva</strong></td><td>Consumidor Final</td><td>💵 Dinheiro</td><td><strong style="color:var(--sage)">${fmtMoeda(35.50)}</strong></td></tr>
-      <tr><td>26/05/2026 09:15</td><td><strong>Ana Oliveira</strong></td><td>Carlos Pereira</td><td>📒 Fiado</td><td><strong style="color:var(--sage)">${fmtMoeda(45.50)}</strong></td></tr>`;
+    _relVendasAll = [
+      {data_hora:'2026-05-26T10:30:00',funcionario:'Maria da Silva',cliente:null,forma_pagamento:'DINHEIRO',total:35.50},
+      {data_hora:'2026-05-26T09:15:00',funcionario:'Ana Oliveira',cliente:'Carlos Pereira',forma_pagamento:'FIADO',total:45.50},
+    ];
+    _relVendasPage = 1;
+    renderRelVendasPage();
   }
 };
 
@@ -4915,7 +4983,7 @@ async function salvarAtestado() {
         : '<em>Nenhum atestado.</em>';
     }
   } catch(err) {
-    mostrarMsgModal(msgEl,`✅ Atestado salvo! (demo — ${err.message||'sem API'})`, 'sucesso');
+    mostrarMsgModal(msgEl, `❌ ${err.message||'Erro ao salvar atestado. Tente novamente.'}`, 'erro');
   }
 }
 
