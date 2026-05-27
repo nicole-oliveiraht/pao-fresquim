@@ -396,6 +396,18 @@ body {
 
 .btn-logout:hover { background: rgba(255,255,255,0.22); }
 
+.user-menu-wrap { position: relative; }
+.user-dd-btn {
+  display: block; width: 100%; text-align: left;
+  padding: 13px 18px; background: none; border: none;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-body); font-size: 14px;
+  color: var(--ink); cursor: pointer; transition: background 0.12s;
+}
+.user-dd-btn:last-child { border-bottom: none; }
+.user-dd-btn:hover { background: var(--cream); }
+.user-dd-sair { color: var(--rust); font-weight: 700; }
+
 .btn-back {
   background: rgba(255,255,255,0.12);
   border: 1.5px solid rgba(255,255,255,0.2);
@@ -1100,15 +1112,20 @@ body {
   <header class="app-header">
     <span class="header-logo">🍞 Pão <span>FresQUIM</span></span>
     <div class="header-spacer"></div>
-    <div class="header-user">
-      <div class="header-user-avatar" id="header-avatar">👤</div>
-      <div>
-        <div class="header-user-name" id="header-nome">—</div>
-        <div class="header-user-role" id="header-perfil">—</div>
+    <div class="user-menu-wrap">
+      <div class="header-user" onclick="toggleUserMenu(this)" style="cursor:pointer;user-select:none">
+        <div class="header-user-avatar" id="header-avatar">👤</div>
+        <div>
+          <div class="header-user-name" id="header-nome">—</div>
+          <div class="header-user-role" id="header-perfil">—</div>
+        </div>
+        <span style="color:rgba(255,255,255,0.6);font-size:10px;margin-left:4px">▾</span>
+      </div>
+      <div class="user-dropdown" style="display:none;position:absolute;right:0;top:calc(100% + 8px);background:var(--white);border-radius:var(--r-sm);box-shadow:0 8px 28px rgba(0,0,0,0.2);min-width:180px;overflow:hidden;z-index:300">
+        <button class="user-dd-btn" onclick="abrirModalMinhaSenha();fecharUserMenu()">🔐 Trocar Senha</button>
+        <button class="user-dd-btn user-dd-sair" onclick="fazerLogout()">🚪 Sair</button>
       </div>
     </div>
-    <button id="btn-header-minha-senha" class="btn-sec" style="padding:6px 14px;font-size:13px" onclick="abrirModalMinhaSenha()">🔐 Minha Senha</button>
-    <button class="btn-logout" onclick="fazerLogout()">Sair</button>
   </header>
 
   <div class="screen-body">
@@ -1197,14 +1214,20 @@ body {
     <span class="header-logo">🍞 Pão <span>FresQUIM</span></span>
     <span class="header-title">🥖 Produtos</span>
     <div class="header-spacer"></div>
-    <div class="header-user">
-      <div class="header-user-avatar" id="prod-avatar">👤</div>
-      <div>
-        <div class="header-user-name" id="prod-nome">—</div>
-        <div class="header-user-role" id="prod-perfil">—</div>
+    <div class="user-menu-wrap">
+      <div class="header-user" onclick="toggleUserMenu(this)" style="cursor:pointer;user-select:none">
+        <div class="header-user-avatar" id="prod-avatar">👤</div>
+        <div>
+          <div class="header-user-name" id="prod-nome">—</div>
+          <div class="header-user-role" id="prod-perfil">—</div>
+        </div>
+        <span style="color:rgba(255,255,255,0.6);font-size:10px;margin-left:4px">▾</span>
+      </div>
+      <div class="user-dropdown" style="display:none;position:absolute;right:0;top:calc(100% + 8px);background:var(--white);border-radius:var(--r-sm);box-shadow:0 8px 28px rgba(0,0,0,0.2);min-width:180px;overflow:hidden;z-index:300">
+        <button class="user-dd-btn" onclick="abrirModalMinhaSenha();fecharUserMenu()">🔐 Trocar Senha</button>
+        <button class="user-dd-btn user-dd-sair" onclick="fazerLogout()">🚪 Sair</button>
       </div>
     </div>
-    <button class="btn-logout" onclick="fazerLogout()">Sair</button>
   </header>
 
   <div class="screen-body" style="flex:1;padding:28px;max-width:1080px;width:100%;margin:0 auto;">
@@ -1390,11 +1413,17 @@ body {
     <span class="header-logo">🍞 Pão <span>FresQUIM</span></span>
     <span class="header-title">👤 Clientes</span>
     <div class="header-spacer"></div>
-    <div class="header-user">
-      <div class="header-user-avatar" id="cli-avatar">👤</div>
-      <div><div class="header-user-name" id="cli-nome">—</div><div class="header-user-role" id="cli-perfil">—</div></div>
+    <div class="user-menu-wrap">
+      <div class="header-user" onclick="toggleUserMenu(this)" style="cursor:pointer;user-select:none">
+        <div class="header-user-avatar" id="cli-avatar">👤</div>
+        <div><div class="header-user-name" id="cli-nome">—</div><div class="header-user-role" id="cli-perfil">—</div></div>
+        <span style="color:rgba(255,255,255,0.6);font-size:10px;margin-left:4px">▾</span>
+      </div>
+      <div class="user-dropdown" style="display:none;position:absolute;right:0;top:calc(100% + 8px);background:var(--white);border-radius:var(--r-sm);box-shadow:0 8px 28px rgba(0,0,0,0.2);min-width:180px;overflow:hidden;z-index:300">
+        <button class="user-dd-btn" onclick="abrirModalMinhaSenha();fecharUserMenu()">🔐 Trocar Senha</button>
+        <button class="user-dd-btn user-dd-sair" onclick="fazerLogout()">🚪 Sair</button>
+      </div>
     </div>
-    <button class="btn-logout" onclick="fazerLogout()">Sair</button>
   </header>
   <div class="screen-body" style="flex:1;padding:28px;max-width:1080px;width:100%;margin:0 auto;">
 
@@ -1529,11 +1558,17 @@ body {
     <span class="header-logo">🍞 Pão <span>FresQUIM</span></span>
     <span class="header-title">🛒 Registrar Venda</span>
     <div class="header-spacer"></div>
-    <div class="header-user">
-      <div class="header-user-avatar" id="vnd-avatar">👤</div>
-      <div><div class="header-user-name" id="vnd-nome">—</div><div class="header-user-role" id="vnd-perfil">—</div></div>
+    <div class="user-menu-wrap">
+      <div class="header-user" onclick="toggleUserMenu(this)" style="cursor:pointer;user-select:none">
+        <div class="header-user-avatar" id="vnd-avatar">👤</div>
+        <div><div class="header-user-name" id="vnd-nome">—</div><div class="header-user-role" id="vnd-perfil">—</div></div>
+        <span style="color:rgba(255,255,255,0.6);font-size:10px;margin-left:4px">▾</span>
+      </div>
+      <div class="user-dropdown" style="display:none;position:absolute;right:0;top:calc(100% + 8px);background:var(--white);border-radius:var(--r-sm);box-shadow:0 8px 28px rgba(0,0,0,0.2);min-width:180px;overflow:hidden;z-index:300">
+        <button class="user-dd-btn" onclick="abrirModalMinhaSenha();fecharUserMenu()">🔐 Trocar Senha</button>
+        <button class="user-dd-btn user-dd-sair" onclick="fazerLogout()">🚪 Sair</button>
+      </div>
     </div>
-    <button class="btn-logout" onclick="fazerLogout()">Sair</button>
   </header>
 
   <div class="screen-body" style="flex:1;padding:28px;max-width:1080px;width:100%;margin:0 auto;">
@@ -1647,11 +1682,17 @@ body {
     <span class="header-logo">🍞 Pão <span>FresQUIM</span></span>
     <span class="header-title">👷 Funcionários</span>
     <div class="header-spacer"></div>
-    <div class="header-user">
-      <div class="header-user-avatar" id="func-avatar">👤</div>
-      <div><div class="header-user-name" id="func-nome">—</div><div class="header-user-role" id="func-perfil">—</div></div>
+    <div class="user-menu-wrap">
+      <div class="header-user" onclick="toggleUserMenu(this)" style="cursor:pointer;user-select:none">
+        <div class="header-user-avatar" id="func-avatar">👤</div>
+        <div><div class="header-user-name" id="func-nome">—</div><div class="header-user-role" id="func-perfil">—</div></div>
+        <span style="color:rgba(255,255,255,0.6);font-size:10px;margin-left:4px">▾</span>
+      </div>
+      <div class="user-dropdown" style="display:none;position:absolute;right:0;top:calc(100% + 8px);background:var(--white);border-radius:var(--r-sm);box-shadow:0 8px 28px rgba(0,0,0,0.2);min-width:180px;overflow:hidden;z-index:300">
+        <button class="user-dd-btn" onclick="abrirModalMinhaSenha();fecharUserMenu()">🔐 Trocar Senha</button>
+        <button class="user-dd-btn user-dd-sair" onclick="fazerLogout()">🚪 Sair</button>
+      </div>
     </div>
-    <button class="btn-logout" onclick="fazerLogout()">Sair</button>
   </header>
   <div class="screen-body" style="flex:1;padding:28px;max-width:1080px;width:100%;margin:0 auto;">
 
@@ -1808,11 +1849,17 @@ body {
     <span class="header-logo">🍞 Pão <span>FresQUIM</span></span>
     <span class="header-title">📊 Relatórios</span>
     <div class="header-spacer"></div>
-    <div class="header-user">
-      <div class="header-user-avatar" id="rel-avatar">👤</div>
-      <div><div class="header-user-name" id="rel-nome">—</div><div class="header-user-role" id="rel-perfil">—</div></div>
+    <div class="user-menu-wrap">
+      <div class="header-user" onclick="toggleUserMenu(this)" style="cursor:pointer;user-select:none">
+        <div class="header-user-avatar" id="rel-avatar">👤</div>
+        <div><div class="header-user-name" id="rel-nome">—</div><div class="header-user-role" id="rel-perfil">—</div></div>
+        <span style="color:rgba(255,255,255,0.6);font-size:10px;margin-left:4px">▾</span>
+      </div>
+      <div class="user-dropdown" style="display:none;position:absolute;right:0;top:calc(100% + 8px);background:var(--white);border-radius:var(--r-sm);box-shadow:0 8px 28px rgba(0,0,0,0.2);min-width:180px;overflow:hidden;z-index:300">
+        <button class="user-dd-btn" onclick="abrirModalMinhaSenha();fecharUserMenu()">🔐 Trocar Senha</button>
+        <button class="user-dd-btn user-dd-sair" onclick="fazerLogout()">🚪 Sair</button>
+      </div>
     </div>
-    <button class="btn-logout" onclick="fazerLogout()">Sair</button>
   </header>
   <div class="screen-body" style="flex:1;padding:28px;max-width:1080px;width:100%;margin:0 auto;">
 
@@ -1989,11 +2036,17 @@ body {
     <span class="header-logo">🍞 Pão <span>FresQUIM</span></span>
     <span class="header-title">🕐 Controle de Ponto</span>
     <div class="header-spacer"></div>
-    <div class="header-user">
-      <div class="header-user-avatar" id="pto-avatar">👤</div>
-      <div><div class="header-user-name" id="pto-nome">—</div><div class="header-user-role" id="pto-perfil">—</div></div>
+    <div class="user-menu-wrap">
+      <div class="header-user" onclick="toggleUserMenu(this)" style="cursor:pointer;user-select:none">
+        <div class="header-user-avatar" id="pto-avatar">👤</div>
+        <div><div class="header-user-name" id="pto-nome">—</div><div class="header-user-role" id="pto-perfil">—</div></div>
+        <span style="color:rgba(255,255,255,0.6);font-size:10px;margin-left:4px">▾</span>
+      </div>
+      <div class="user-dropdown" style="display:none;position:absolute;right:0;top:calc(100% + 8px);background:var(--white);border-radius:var(--r-sm);box-shadow:0 8px 28px rgba(0,0,0,0.2);min-width:180px;overflow:hidden;z-index:300">
+        <button class="user-dd-btn" onclick="abrirModalMinhaSenha();fecharUserMenu()">🔐 Trocar Senha</button>
+        <button class="user-dd-btn user-dd-sair" onclick="fazerLogout()">🚪 Sair</button>
+      </div>
     </div>
-    <button class="btn-logout" onclick="fazerLogout()">Sair</button>
   </header>
 
   <div class="screen-body" style="flex:1;padding:28px;max-width:1080px;width:100%;margin:0 auto;">
@@ -2094,11 +2147,17 @@ body {
     <span class="header-logo">🍞 Pão <span>FresQUIM</span></span>
     <span class="header-title">📷 Câmeras de Segurança</span>
     <div class="header-spacer"></div>
-    <div class="header-user">
-      <div class="header-user-avatar" id="cam-avatar">👤</div>
-      <div><div class="header-user-name" id="cam-nome">—</div><div class="header-user-role" id="cam-perfil">—</div></div>
+    <div class="user-menu-wrap">
+      <div class="header-user" onclick="toggleUserMenu(this)" style="cursor:pointer;user-select:none">
+        <div class="header-user-avatar" id="cam-avatar">👤</div>
+        <div><div class="header-user-name" id="cam-nome">—</div><div class="header-user-role" id="cam-perfil">—</div></div>
+        <span style="color:rgba(255,255,255,0.6);font-size:10px;margin-left:4px">▾</span>
+      </div>
+      <div class="user-dropdown" style="display:none;position:absolute;right:0;top:calc(100% + 8px);background:var(--white);border-radius:var(--r-sm);box-shadow:0 8px 28px rgba(0,0,0,0.2);min-width:180px;overflow:hidden;z-index:300">
+        <button class="user-dd-btn" onclick="abrirModalMinhaSenha();fecharUserMenu()">🔐 Trocar Senha</button>
+        <button class="user-dd-btn user-dd-sair" onclick="fazerLogout()">🚪 Sair</button>
+      </div>
     </div>
-    <button class="btn-logout" onclick="fazerLogout()">Sair</button>
   </header>
 
   <div class="screen-body" style="flex:1;padding:28px;max-width:1200px;width:100%;margin:0 auto;">
@@ -2194,11 +2253,17 @@ body {
     <span class="header-logo">🍞 Pão <span>FresQUIM</span></span>
     <span class="header-title">🧾 Notas Fiscais</span>
     <div class="header-spacer"></div>
-    <div class="header-user">
-      <div class="header-user-avatar" id="nf-avatar">👤</div>
-      <div><div class="header-user-name" id="nf-nome">—</div><div class="header-user-role" id="nf-perfil">—</div></div>
+    <div class="user-menu-wrap">
+      <div class="header-user" onclick="toggleUserMenu(this)" style="cursor:pointer;user-select:none">
+        <div class="header-user-avatar" id="nf-avatar">👤</div>
+        <div><div class="header-user-name" id="nf-nome">—</div><div class="header-user-role" id="nf-perfil">—</div></div>
+        <span style="color:rgba(255,255,255,0.6);font-size:10px;margin-left:4px">▾</span>
+      </div>
+      <div class="user-dropdown" style="display:none;position:absolute;right:0;top:calc(100% + 8px);background:var(--white);border-radius:var(--r-sm);box-shadow:0 8px 28px rgba(0,0,0,0.2);min-width:180px;overflow:hidden;z-index:300">
+        <button class="user-dd-btn" onclick="abrirModalMinhaSenha();fecharUserMenu()">🔐 Trocar Senha</button>
+        <button class="user-dd-btn user-dd-sair" onclick="fazerLogout()">🚪 Sair</button>
+      </div>
     </div>
-    <button class="btn-logout" onclick="fazerLogout()">Sair</button>
   </header>
 
   <div class="screen-body" style="flex:1;padding:28px;max-width:1080px;width:100%;margin:0 auto;">
@@ -2305,11 +2370,17 @@ body {
     <span class="header-logo">🍞 Pão <span>FresQUIM</span></span>
     <span class="header-title">⚙️ Configurações</span>
     <div class="header-spacer"></div>
-    <div class="header-user">
-      <div class="header-user-avatar" id="cfg-avatar">👤</div>
-      <div><div class="header-user-name" id="cfg-nome">—</div><div class="header-user-role" id="cfg-perfil">—</div></div>
+    <div class="user-menu-wrap">
+      <div class="header-user" onclick="toggleUserMenu(this)" style="cursor:pointer;user-select:none">
+        <div class="header-user-avatar" id="cfg-avatar">👤</div>
+        <div><div class="header-user-name" id="cfg-nome">—</div><div class="header-user-role" id="cfg-perfil">—</div></div>
+        <span style="color:rgba(255,255,255,0.6);font-size:10px;margin-left:4px">▾</span>
+      </div>
+      <div class="user-dropdown" style="display:none;position:absolute;right:0;top:calc(100% + 8px);background:var(--white);border-radius:var(--r-sm);box-shadow:0 8px 28px rgba(0,0,0,0.2);min-width:180px;overflow:hidden;z-index:300">
+        <button class="user-dd-btn" onclick="abrirModalMinhaSenha();fecharUserMenu()">🔐 Trocar Senha</button>
+        <button class="user-dd-btn user-dd-sair" onclick="fazerLogout()">🚪 Sair</button>
+      </div>
     </div>
-    <button class="btn-logout" onclick="fazerLogout()">Sair</button>
   </header>
 
   <div class="screen-body" style="flex:1;padding:28px;max-width:1080px;width:100%;margin:0 auto;">
@@ -2720,6 +2791,21 @@ async function fazerLogout() {
   document.getElementById('login-erro').style.display = 'none';
   mostrarTela('screen-login');
 }
+
+function toggleUserMenu(el) {
+  const wrap = el.closest('.user-menu-wrap');
+  const dd = wrap ? wrap.querySelector('.user-dropdown') : null;
+  if (!dd) return;
+  const isOpen = dd.style.display === 'block';
+  fecharUserMenu();
+  if (!isOpen) dd.style.display = 'block';
+}
+function fecharUserMenu() {
+  document.querySelectorAll('.user-dropdown').forEach(d => d.style.display = 'none');
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.user-menu-wrap')) fecharUserMenu();
+});
 
 /* ─── Verificar sessão ao carregar a página ─── */
 (async function verificarSessao() {
