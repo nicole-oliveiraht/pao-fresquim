@@ -3,6 +3,13 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json"/>
+  <meta name="theme-color" content="#8B5A1A"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="Pão FresQUIM"/>
+  <link rel="apple-touch-icon" href="/icon-192.png"/>
 <title>Pão FresQUIM — Sistema de Gestão</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
@@ -388,24 +395,6 @@ body {
 }
 
 .btn-logout:hover { background: rgba(255,255,255,0.22); }
-
-.user-dd-btn {
-  display: block;
-  width: 100%;
-  text-align: left;
-  padding: 13px 18px;
-  background: none;
-  border: none;
-  border-bottom: 1px solid var(--border);
-  font-family: var(--font-body);
-  font-size: 14px;
-  color: var(--ink);
-  cursor: pointer;
-  transition: background 0.12s;
-}
-.user-dd-btn:last-child { border-bottom: none; }
-.user-dd-btn:hover { background: var(--cream); }
-.user-dd-sair { color: var(--rust); font-weight: 700; }
 
 .btn-back {
   background: rgba(255,255,255,0.12);
@@ -1048,20 +1037,15 @@ body {
   <header class="app-header">
     <span class="header-logo">🍞 Pão <span>FresQUIM</span></span>
     <div class="header-spacer"></div>
-    <div id="user-menu-wrap" style="position:relative">
-      <div class="header-user" onclick="toggleUserMenu()" style="cursor:pointer;user-select:none">
-        <div class="header-user-avatar" id="header-avatar">👤</div>
-        <div>
-          <div class="header-user-name" id="header-nome">—</div>
-          <div class="header-user-role" id="header-perfil">—</div>
-        </div>
-        <span style="color:rgba(255,255,255,0.55);font-size:10px;margin-left:4px">▾</span>
-      </div>
-      <div id="user-dropdown" style="display:none;position:absolute;right:0;top:calc(100% + 10px);background:var(--white);border-radius:var(--r-sm);box-shadow:0 8px 28px rgba(0,0,0,0.2);min-width:190px;overflow:hidden;z-index:300">
-        <button class="user-dd-btn" onclick="abrirModalMinhaSenha();fecharUserMenu()">🔐 Trocar Senha</button>
-        <button class="user-dd-btn user-dd-sair" onclick="fazerLogout()">🚪 Sair</button>
+    <div class="header-user">
+      <div class="header-user-avatar" id="header-avatar">👤</div>
+      <div>
+        <div class="header-user-name" id="header-nome">—</div>
+        <div class="header-user-role" id="header-perfil">—</div>
       </div>
     </div>
+    <button class="btn-sec" style="padding:6px 14px;font-size:13px" onclick="abrirModalMinhaSenha()">🔐 Minha Senha</button>
+    <button class="btn-logout" onclick="fazerLogout()">Sair</button>
   </header>
 
   <div class="screen-body">
@@ -1523,7 +1507,7 @@ body {
                 oninput="buscarProdutoNome(this.value)" onkeydown="if(event.key==='Escape') fecharSugestoesVnd()"/>
               <div id="vnd-sugestoes" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--white);border:2px solid var(--caramel);border-top:none;border-radius:0 0 var(--r-sm) var(--r-sm);z-index:50;max-height:240px;overflow-y:auto;box-shadow:0 8px 24px var(--shadow)"></div>
             </div>
-            <div style="font-size:12px;color:var(--ink-lt);margin-top:8px">💡 Digite ao menos 1 letra para buscar. Clique no produto para adicionar ao carrinho.</div>
+            <div style="font-size:12px;color:var(--ink-lt);margin-top:8px">💡 Digite ao menos 2 letras para buscar. Clique no produto para adicionar ao carrinho.</div>
           </div>
 
           <div id="vnd-item-info" style="display:none;margin-top:12px;padding:12px;background:var(--cream-med);border-radius:var(--r-sm);font-size:14px;color:var(--caramel-dk);font-weight:600"></div>
@@ -1795,9 +1779,8 @@ body {
           </div>
           <div class="prod-field" style="min-width:200px">
             <label>Filtrar por Produto</label>
-            <select id="rel-filtro-produto">
-              <option value="">Todos os produtos</option>
-            </select>
+            <input id="rel-filtro-produto" type="text" placeholder="Nome ou código..."
+              style="padding:11px 14px;border:2px solid var(--border);border-radius:var(--r-sm);font-size:14px;font-family:var(--font-body);background:var(--cream);color:var(--ink);outline:none"/>
           </div>
           <button class="btn-prim" onclick="gerarRelatorio()" style="padding:11px 24px">🔍 Gerar Relatório</button>
         </div>
@@ -1805,7 +1788,7 @@ body {
 
       <div id="rel-resultado" style="display:none">
         <!-- Cards de resumo -->
-        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:16px">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px">
           <div class="prod-card" style="text-align:center;padding:20px">
             <div style="font-size:11px;font-weight:800;color:var(--ink-lt);text-transform:uppercase;letter-spacing:.08em">Total de Vendas</div>
             <div id="rel-total-vendas" style="font-family:var(--font-display);font-size:34px;font-weight:900;color:var(--caramel-dk)">0</div>
@@ -1817,10 +1800,6 @@ body {
           <div class="prod-card" style="text-align:center;padding:20px">
             <div style="font-size:11px;font-weight:800;color:var(--ink-lt);text-transform:uppercase;letter-spacing:.08em">Total Fiado</div>
             <div id="rel-fiado" style="font-family:var(--font-display);font-size:34px;font-weight:900;color:var(--rust)">R$ 0</div>
-          </div>
-          <div class="prod-card" style="text-align:center;padding:20px">
-            <div style="font-size:11px;font-weight:800;color:var(--ink-lt);text-transform:uppercase;letter-spacing:.08em">Recebido de Fiado</div>
-            <div id="rel-recebido-fiado" style="font-family:var(--font-display);font-size:34px;font-weight:900;color:var(--sage)">R$ 0</div>
           </div>
         </div>
 
@@ -1848,16 +1827,6 @@ body {
           </table>
         </div>
 
-        <!-- Pagamentos de fiado recebidos -->
-        <div class="prod-card">
-          <div class="prod-card-title">💰 Quitações de Fiado Recebidas</div>
-          <div id="rel-pgto-fiado-vazio" style="display:none;color:var(--ink-lt);text-align:center;padding:20px;font-size:14px">Nenhum pagamento de fiado no período.</div>
-          <table class="prod-table" id="rel-pgto-fiado-table">
-            <thead><tr><th>Data</th><th>Cliente</th><th>Valor</th><th>Observações</th></tr></thead>
-            <tbody id="rel-pgto-fiado-tbody"></tbody>
-          </table>
-        </div>
-
         <!-- Últimas vendas com funcionário -->
         <div class="prod-card">
           <div class="prod-card-title">📋 Últimas Vendas</div>
@@ -1866,11 +1835,6 @@ body {
               <thead><tr><th>Data/Hora</th><th>Funcionário</th><th>Cliente</th><th>Pagamento</th><th>Total</th></tr></thead>
               <tbody id="rel-vendas-tbody"></tbody>
             </table>
-          </div>
-          <div id="rel-vendas-pag" style="display:flex;align-items:center;justify-content:center;gap:12px;padding:10px 0 4px;font-size:14px">
-            <button id="rel-vendas-prev" class="btn-sec" style="padding:6px 14px;font-size:13px" onclick="_relVendasPag--;renderRelVendasPag()">← Anterior</button>
-            <span id="rel-vendas-pag-info" style="color:var(--ink-lt)">Página 1 de 1</span>
-            <button id="rel-vendas-next" class="btn-sec" style="padding:6px 14px;font-size:13px" onclick="_relVendasPag++;renderRelVendasPag()">Próxima →</button>
           </div>
         </div>
       </div>
@@ -2238,11 +2202,6 @@ body {
           </thead>
           <tbody id="nf-tbody"></tbody>
         </table>
-      </div>
-      <div id="nf-pag" style="display:none;align-items:center;justify-content:center;gap:12px;padding:10px 0 4px;font-size:14px">
-        <button id="nf-prev" class="btn-sec" style="padding:6px 14px;font-size:13px" onclick="_nfPag--;renderNfPag()">← Anterior</button>
-        <span id="nf-pag-info" style="color:var(--ink-lt)">Página 1 de 1</span>
-        <button id="nf-next" class="btn-sec" style="padding:6px 14px;font-size:13px" onclick="_nfPag++;renderNfPag()">Próxima →</button>
       </div>
     </div>
 
@@ -2698,19 +2657,6 @@ async function fazerLogout() {
   document.getElementById('login-erro').style.display = 'none';
   mostrarTela('screen-login');
 }
-
-function toggleUserMenu() {
-  const dd = document.getElementById('user-dropdown');
-  if(dd) dd.style.display = dd.style.display === 'none' ? 'block' : 'none';
-}
-function fecharUserMenu() {
-  const dd = document.getElementById('user-dropdown');
-  if(dd) dd.style.display = 'none';
-}
-document.addEventListener('click', function(e) {
-  const wrap = document.getElementById('user-menu-wrap');
-  if(wrap && !wrap.contains(e.target)) fecharUserMenu();
-});
 
 /* ─── Verificar sessão ao carregar a página ─── */
 (async function verificarSessao() {
@@ -3446,66 +3392,25 @@ function relAba(idx) {
     if(tab) tab.classList.toggle('active', i===idx);
     if(pan) pan.style.display = i===idx ? 'block' : 'none';
   });
-  if(idx===0) carregarProdutosRelFiltro();
   if(idx===1) carregarDevedores();
   if(idx===2) iniciarRelFuncionario();
-}
-
-async function carregarProdutosRelFiltro() {
-  const sel = document.getElementById('rel-filtro-produto');
-  if (!sel || sel.options.length > 1) return;
-  try {
-    const resp = await fetch('/api/produtos', {credentials:'include'});
-    const data = await resp.json();
-    if (data.ok) {
-      data.produtos.forEach(p => {
-        const opt = document.createElement('option');
-        opt.value = p.nome;
-        opt.textContent = p.nome;
-        sel.appendChild(opt);
-      });
-    }
-  } catch(_) {}
-}
-
-let _relVendasAll = [], _relVendasPag = 1;
-function renderRelVendasPag() {
-  const PAGE = 15;
-  const total = Math.max(1, Math.ceil(_relVendasAll.length / PAGE));
-  _relVendasPag = Math.min(Math.max(_relVendasPag, 1), total);
-  const items = _relVendasAll.slice((_relVendasPag-1)*PAGE, _relVendasPag*PAGE);
-  const tbody = document.getElementById('rel-vendas-tbody');
-  if(tbody) tbody.innerHTML = items.map(v=>`
-    <tr>
-      <td>${fmtData(v.data_hora)} ${new Date(v.data_hora).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</td>
-      <td><strong>${v.funcionario||'—'}</strong></td>
-      <td>${v.cliente||'<span style="color:var(--ink-lt)">Consumidor Final</span>'}</td>
-      <td>${_pgtoLabel[(v.forma_pagamento||'').toLowerCase()]||v.forma_pagamento}</td>
-      <td><strong style="color:var(--sage)">${fmtMoeda(v.total)}</strong></td>
-    </tr>`).join('');
-  const info = document.getElementById('rel-vendas-pag-info');
-  const prev = document.getElementById('rel-vendas-prev');
-  const next = document.getElementById('rel-vendas-next');
-  if(info) info.textContent = `Página ${_relVendasPag} de ${total}`;
-  if(prev) prev.disabled = _relVendasPag <= 1;
-  if(next) next.disabled = _relVendasPag >= total;
 }
 
 async function gerarRelatorio() {
   const de=document.getElementById('rel-de').value;
   const ate=document.getElementById('rel-ate').value;
   const forma=document.getElementById('rel-forma').value;
-  const produto=(document.getElementById('rel-filtro-produto')?.value||'').trim();
   document.getElementById('rel-loading').style.display='block';
   document.getElementById('rel-resultado').style.display='none';
-  const params=new URLSearchParams({de:de||'',ate:ate||'',forma:forma ? forma.toUpperCase() : '',produto:produto||''});
-  let resumo={total_vendas:0,receita_total:0,total_fiado:0,total_recebido_fiado:0}, porDia=[], porProduto=[], pagamentosFiado=[];
+  let resumo={total_vendas:0,receita_total:0,total_fiado:0}, porDia=[], porProduto=[];
   try {
+    const params=new URLSearchParams({de:de||'',ate:ate||'',forma:forma ? forma.toUpperCase() : ''});
     const resp=await fetch(`/api/relatorios/vendas?${params}`, {credentials:'include'});
     const data=await resp.json();
-    if(data.ok){resumo=data.resumo;porDia=data.porDia;porProduto=data.porProduto;resumo.total_recebido_fiado=resumo.total_recebido_fiado??0;}
+    if(data.ok){resumo=data.resumo;porDia=data.porDia;porProduto=data.porProduto;}
   } catch(_) {
-    resumo={total_vendas:142,receita_total:1850.40,total_fiado:320.50,total_recebido_fiado:0};
+    // Dados demo
+    resumo={total_vendas:142,receita_total:1850.40,total_fiado:320.50};
     porDia=[
       {dia:'2026-04-28',receita:312.50},{dia:'2026-04-29',receita:280.00},
       {dia:'2026-04-30',receita:410.20},{dia:'2026-05-01',receita:390.70},{dia:'2026-05-02',receita:457.00}
@@ -3516,34 +3421,11 @@ async function gerarRelatorio() {
       {nome:'Biscoito Polvilho',qtd_vendida:60,receita:66},{nome:'Pão Sovado',qtd_vendida:55,receita:38.50},
     ];
   }
-  try {
-    const _ctrl=new AbortController(); const _tid=setTimeout(()=>_ctrl.abort(),5000);
-    const respPgto=await fetch(`/api/relatorios/pagamentos-fiado?${params}`, {credentials:'include',signal:_ctrl.signal});
-    clearTimeout(_tid);
-    const dataPgto=await respPgto.json();
-    if(dataPgto.ok){pagamentosFiado=dataPgto.pagamentos;resumo.total_recebido_fiado=dataPgto.total_recebido??0;}
-    else {
-      pagamentosFiado=[
-        {data_pagamento:'2026-05-02',cliente_nome:'Carlos Pereira',valor:30.00,observacoes:'Pago no caixa'},
-        {data_pagamento:'2026-05-04',cliente_nome:'Maria Lima',valor:85.00,observacoes:''},
-        {data_pagamento:'2026-05-06',cliente_nome:'Carlos Pereira',valor:50.00,observacoes:'Restante da dívida'},
-      ];
-      resumo.total_recebido_fiado=165.00;
-    }
-  } catch(_) {
-    pagamentosFiado=[
-      {data_pagamento:'2026-05-02',cliente_nome:'Carlos Pereira',valor:30.00,observacoes:'Pago no caixa'},
-      {data_pagamento:'2026-05-04',cliente_nome:'Maria Lima',valor:85.00,observacoes:''},
-      {data_pagamento:'2026-05-06',cliente_nome:'Carlos Pereira',valor:50.00,observacoes:'Restante da dívida'},
-    ];
-    resumo.total_recebido_fiado=165.00;
-  }
   document.getElementById('rel-loading').style.display='none';
   document.getElementById('rel-resultado').style.display='block';
   document.getElementById('rel-total-vendas').textContent=resumo.total_vendas;
   document.getElementById('rel-receita').textContent=fmtMoeda(resumo.receita_total);
   document.getElementById('rel-fiado').textContent=fmtMoeda(resumo.total_fiado);
-  document.getElementById('rel-recebido-fiado').textContent=fmtMoeda(resumo.total_recebido_fiado??0);
 
   // Gráfico de barras
   const maxVal=Math.max(...porDia.map(d=>Number(d.receita)),1);
@@ -3565,23 +3447,6 @@ async function gerarRelatorio() {
       <td>${p.qtd_vendida}</td>
       <td><strong style="color:var(--sage)">${fmtMoeda(p.receita)}</strong></td>
     </tr>`).join('');
-
-  // Pagamentos de fiado
-  const pgtoVazio=document.getElementById('rel-pgto-fiado-vazio');
-  const pgtoTable=document.getElementById('rel-pgto-fiado-table');
-  if(pagamentosFiado.length===0){
-    pgtoVazio.style.display='block'; pgtoTable.style.display='none';
-  } else {
-    pgtoVazio.style.display='none'; pgtoTable.style.display='';
-    document.getElementById('rel-pgto-fiado-tbody').innerHTML=pagamentosFiado.map(pg=>`
-      <tr>
-        <td>${fmtData(pg.data_pagamento)}</td>
-        <td><strong>${pg.cliente_nome}</strong></td>
-        <td><strong style="color:var(--sage)">${fmtMoeda(pg.valor)}</strong></td>
-        <td style="color:var(--ink-lt);font-size:13px">${pg.observacoes||'—'}</td>
-      </tr>`).join('');
-  }
-
 }
 
 async function carregarDevedores() {
@@ -3655,7 +3520,7 @@ let _vndNomeTimer = null;
 async function buscarProdutoNome(termo) {
   clearTimeout(_vndNomeTimer);
   const sug = document.getElementById('vnd-sugestoes');
-  if(termo.length < 1){ sug.style.display='none'; return; }
+  if(termo.length < 2){ sug.style.display='none'; return; }
 
   _vndNomeTimer = setTimeout(async () => {
     let produtos = [];
@@ -4039,8 +3904,7 @@ const _pgtoLabel = { pix:'📱 Pix', dinheiro:'💵 Dinheiro', debito:'💳 Déb
 /* ── alias para o HTML que chama carregarNF() ── */
 async function carregarNF() { await buscarNotas(); }
 
-let _notasCache = []; // cache para imprimirTodas e paginação
-let _nfPag = 1;
+let _notasCache = []; // cache para imprimirTodas
 
 async function buscarNotas() {
   const de    = document.getElementById('nf-de').value;
@@ -4067,8 +3931,7 @@ async function buscarNotas() {
   _notasCache = notas;
 
   load.style.display='none';
-  const nfPagDiv = document.getElementById('nf-pag');
-  if(!notas.length){ vazio.style.display='block'; if(nfPagDiv) nfPagDiv.style.display='none'; return; }
+  if(!notas.length){ vazio.style.display='block'; return; }
   wrap.style.display='block';
 
   // Resumo
@@ -4083,17 +3946,7 @@ async function buscarNotas() {
   if(elValor) elValor.textContent = fmtMoeda(totalValor);
   if(elTick)  elTick.textContent  = fmtMoeda(ticket);
 
-  _nfPag = 1;
-  renderNfPag();
-}
-
-function renderNfPag() {
-  const PAGE = 15;
-  const notas = _notasCache;
-  const total = Math.max(1, Math.ceil(notas.length / PAGE));
-  _nfPag = Math.min(Math.max(_nfPag, 1), total);
-  const items = notas.slice((_nfPag-1)*PAGE, _nfPag*PAGE);
-  document.getElementById('nf-tbody').innerHTML = items.map(n=>`
+  document.getElementById('nf-tbody').innerHTML = notas.map(n=>`
     <tr>
       <td><strong style="font-family:monospace">#${String(n.id_venda).padStart(6,'0')}</strong></td>
       <td>${fmtData(n.data_hora)} ${new Date(n.data_hora).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</td>
@@ -4105,14 +3958,6 @@ function renderNfPag() {
         <button class="btn-editar" onclick="abrirModalNF(${JSON.stringify(n).replace(/"/g,'&quot;')})">🧾 Ver / Imprimir</button>
       </td>
     </tr>`).join('');
-  const pagDiv = document.getElementById('nf-pag');
-  const info   = document.getElementById('nf-pag-info');
-  const prev   = document.getElementById('nf-prev');
-  const next   = document.getElementById('nf-next');
-  if(pagDiv) pagDiv.style.display = notas.length > PAGE ? 'flex' : 'none';
-  if(info) info.textContent = `Página ${_nfPag} de ${total}`;
-  if(prev) prev.disabled = _nfPag <= 1;
-  if(next) next.disabled = _nfPag >= total;
 }
 
 function imprimirTodas() {
@@ -4762,7 +4607,15 @@ gerarRelatorio = async function() {
           <td>${f.qtd_vendas}</td>
           <td><strong style="color:var(--sage)">${fmtMoeda(f.receita)}</strong></td>
         </tr>`).join('');
-      if(data.ultimasVendas){ _relVendasAll=data.ultimasVendas; _relVendasPag=1; renderRelVendasPag(); }
+      const vendasBody = document.getElementById('rel-vendas-tbody');
+      if(vendasBody && data.ultimasVendas) vendasBody.innerHTML = data.ultimasVendas.map(v=>`
+        <tr>
+          <td>${fmtData(v.data_hora)} ${new Date(v.data_hora).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</td>
+          <td><strong>${v.funcionario||'—'}</strong></td>
+          <td>${v.cliente||'<span style="color:var(--ink-lt)">Consumidor Final</span>'}</td>
+          <td>${_pgtoLabel[(v.forma_pagamento||'').toLowerCase()]||v.forma_pagamento}</td>
+          <td><strong style="color:var(--sage)">${fmtMoeda(v.total)}</strong></td>
+        </tr>`).join('');
     }
   } catch(_) {
     // Dados demo para ranking
@@ -4771,11 +4624,10 @@ gerarRelatorio = async function() {
       <tr><td><strong style="color:var(--caramel-dk)">#1</strong></td><td><strong>🏆 Maria da Silva</strong></td><td>58</td><td><strong style="color:var(--sage)">${fmtMoeda(820.50)}</strong></td></tr>
       <tr><td><strong style="color:var(--caramel-dk)">#2</strong></td><td><strong>Ana Oliveira</strong></td><td>47</td><td><strong style="color:var(--sage)">${fmtMoeda(640.00)}</strong></td></tr>
       <tr><td><strong style="color:var(--caramel-dk)">#3</strong></td><td><strong>Carlos Santos</strong></td><td>37</td><td><strong style="color:var(--sage)">${fmtMoeda(389.90)}</strong></td></tr>`;
-    _relVendasAll=[
-      {data_hora:'2026-05-26T10:30:00',funcionario:'Maria da Silva',cliente:null,forma_pagamento:'DINHEIRO',total:35.50},
-      {data_hora:'2026-05-26T09:15:00',funcionario:'Ana Oliveira',cliente:'Carlos Pereira',forma_pagamento:'FIADO',total:45.50},
-    ];
-    _relVendasPag=1; renderRelVendasPag();
+    const vendasBody = document.getElementById('rel-vendas-tbody');
+    if(vendasBody) vendasBody.innerHTML = `
+      <tr><td>26/05/2026 10:30</td><td><strong>Maria da Silva</strong></td><td>Consumidor Final</td><td>💵 Dinheiro</td><td><strong style="color:var(--sage)">${fmtMoeda(35.50)}</strong></td></tr>
+      <tr><td>26/05/2026 09:15</td><td><strong>Ana Oliveira</strong></td><td>Carlos Pereira</td><td>📒 Fiado</td><td><strong style="color:var(--sage)">${fmtMoeda(45.50)}</strong></td></tr>`;
   }
 };
 
@@ -4966,7 +4818,24 @@ async function enviarNotificacao(canal) {
 ══════════════════════════════════════════ */
 /* abrirModalFunc: férias/faltas já preenchidos na função abaixo */
 
-/* filtro por produto agora é enviado ao backend via parâmetro ?produto= */
+/* ══════════════════════════════════════════
+   RF35 — Relatório filtrado por produto
+══════════════════════════════════════════ */
+const _gerarRelatorioBase = gerarRelatorio;
+gerarRelatorio = async function() {
+  // Passa o filtro de produto para a query via porProduto já filtrado no frontend
+  await _gerarRelatorioBase();
+  const filtroProduto = (document.getElementById('rel-filtro-produto')?.value||'').toLowerCase().trim();
+  if (!filtroProduto) return;
+  // Filtrar a tabela de produtos já renderizada
+  const tbody = document.getElementById('rel-produtos-tbody');
+  if (!tbody) return;
+  const rows = tbody.querySelectorAll('tr');
+  rows.forEach(row => {
+    const nome = row.cells[1]?.textContent?.toLowerCase()||'';
+    row.style.display = nome.includes(filtroProduto) ? '' : 'none';
+  });
+};
 
 /* ══════════════════════════════════════════
    RF38/RF39 — carregarDevedores com notificações e botão real
@@ -5486,6 +5355,16 @@ registrarMeuPonto = async function(tipo) {
 
 // Verificar token de reset na URL
 verificarTokenURL();
+</script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(() => console.log('✅ PWA: Service Worker registrado'))
+        .catch(err => console.log('SW erro:', err));
+    });
+  }
 </script>
 
 </body>
