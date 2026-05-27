@@ -4940,6 +4940,10 @@ async function salvarAtestado() {
   const input  = document.getElementById('at-arquivo');
   const msgEl  = document.getElementById('at-msg');
 
+  if (!id) {
+    mostrarMsgModal(msgEl,'⚠️ Selecione um funcionário primeiro.','erro');
+    return;
+  }
   if (!data_atestado) {
     mostrarMsgModal(msgEl,'⚠️ Informe a data do atestado.','erro');
     return;
@@ -4948,7 +4952,7 @@ async function salvarAtestado() {
   let arquivo_base64 = null;
   let arquivo_nome   = null;
 
-  if (input.files && input.files[0]) {
+  if (input && input.files && input.files[0]) {
     const file = input.files[0];
     arquivo_nome = file.name;
     arquivo_base64 = await new Promise((res, rej) => {
@@ -4960,20 +4964,28 @@ async function salvarAtestado() {
   }
 
   try {
-    const resp = await fetch(`/api/funcionarios/${id}/atestado`, {credentials:'include',
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({data_atestado, observacoes:obs, arquivo_base64, arquivo_nome}),
+    const resp = await fetch(`/api/funcionarios/${id}/atestado`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({data_atestado, observacoes: obs, arquivo_base64, arquivo_nome}),
     });
-    const data = await resp.json();
-    if (!resp.ok||!data.ok) throw new Error(data.erro||'Erro');
+
+    let data;
+    try { data = await resp.json(); }
+    catch(_) { throw new Error(`Servidor retornou resposta inválida (HTTP ${resp.status}). Reinicie o servidor e tente novamente.`); }
+
+    if (!resp.ok || !data.ok) throw new Error(data.erro || 'Erro ao salvar.');
+
     mostrarMsgModal(msgEl,'✅ Atestado salvo!','sucesso');
-    document.getElementById('at-data').value='';
-    document.getElementById('at-obs').value='';
-    if(input) input.value='';
-    // Recarregar lista de atestados
-    const respF = await fetch(`/api/funcionarios/${id}`,{credentials:'include'});
-    const dataF = await respF.json();
-    if(dataF.ok && dataF.atestados) {
+    document.getElementById('at-data').value = '';
+    document.getElementById('at-obs').value  = '';
+    if (input) input.value = '';
+
+    // Recarregar lista de atestados no modal
+    const respF = await fetch(`/api/funcionarios/${id}`, {credentials:'include'});
+    const dataF = await respF.json().catch(()=>({}));
+    if (dataF.ok && dataF.atestados) {
       document.getElementById('func-atestados-lista').innerHTML = dataF.atestados.length
         ? dataF.atestados.map(a=>`
             <div style="padding:6px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px">
@@ -4983,7 +4995,7 @@ async function salvarAtestado() {
         : '<em>Nenhum atestado.</em>';
     }
   } catch(err) {
-    mostrarMsgModal(msgEl, `❌ ${err.message||'Erro ao salvar atestado. Tente novamente.'}`, 'erro');
+    mostrarMsgModal(msgEl, `❌ ${err.message}`, 'erro');
   }
 }
 
