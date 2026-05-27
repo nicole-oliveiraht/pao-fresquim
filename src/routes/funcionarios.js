@@ -30,6 +30,31 @@ router.get('/', async (req, res) => {
   }
 });
 
+/** GET /api/funcionarios/atestados — todos os atestados com nome do funcionário */
+router.get('/atestados', async (req, res) => {
+  const { de, ate, id_funcionario } = req.query;
+  try {
+    const result = await pool.query(
+      `SELECT a.id_atestado, a.id_funcionario, a.data_atestado,
+              a.arquivo_path, a.observacoes,
+              COALESCE(a.criado_em::text, NOW()::text) AS criado_em,
+              COALESCE(a.arquivo_nome, '') AS arquivo_nome,
+              f.nome AS funcionario_nome
+       FROM atestado a
+       JOIN funcionario f ON f.id_funcionario = a.id_funcionario
+       WHERE ($1::date IS NULL OR a.data_atestado >= $1::date)
+         AND ($2::date IS NULL OR a.data_atestado <= $2::date)
+         AND ($3::int  IS NULL OR a.id_funcionario = $3::int)
+       ORDER BY a.data_atestado DESC`,
+      [de || null, ate || null, id_funcionario || null]
+    );
+    res.json({ ok: true, atestados: result.rows });
+  } catch (err) {
+    console.error('[GET /funcionarios/atestados]', err.message);
+    res.status(500).json({ ok: false, erro: 'Erro ao buscar atestados.' });
+  }
+});
+
 /** GET /api/funcionarios/:id */
 router.get('/:id', async (req, res) => {
   try {

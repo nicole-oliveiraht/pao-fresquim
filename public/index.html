@@ -3916,9 +3916,20 @@ async function carregarAtestadosPonto(idFunc='') {
 
   let atestados=[];
   try {
-    const resp = await fetch(`/api/funcionarios${idFunc?'/'+idFunc:''}`, {credentials:'include'});
-    const data = await resp.json();
-    if(data.ok && data.atestados) atestados=data.atestados;
+    if (idFunc) {
+      // Filtrado por funcionário: GET /api/funcionarios/:id retorna {funcionario, atestados}
+      const resp = await fetch(`/api/funcionarios/${idFunc}`, {credentials:'include'});
+      const data = await resp.json();
+      if (data.ok && data.atestados) {
+        const nome = data.funcionario ? data.funcionario.nome : '';
+        atestados = data.atestados.map(a => ({...a, funcionario_nome: nome}));
+      }
+    } else {
+      // Todos: endpoint dedicado que já inclui funcionario_nome
+      const resp = await fetch('/api/funcionarios/atestados', {credentials:'include'});
+      const data = await resp.json();
+      if (data.ok && data.atestados) atestados = data.atestados;
+    }
   } catch(_) { /* sem atestados no demo */ }
 
   load.style.display='none';
