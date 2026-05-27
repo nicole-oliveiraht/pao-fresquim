@@ -1,0 +1,12 @@
+# Arquivo .gitignore
+# Lista de arquivos que o Git deve IGNORAR (não enviar para o GitHub)
+
+# Variáveis de ambiente (contém senhas — NUNCA suba isso para o GitHub)
+.env
+
+# Dependências instaladas pelo npm (muito pesadas para o GitHub)
+node_modules/
+
+# Logs de erro
+*.log
+npm-debug.log*

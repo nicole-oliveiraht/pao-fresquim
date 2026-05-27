@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-ChildItem \"c:\\\\Users\\\\nicol\\\\Documents\\\\pao-fresquim\" -File | Where-Object { $_.Extension -in '.js','.ts','.mjs' } | Select-Object Name)"
+    ]
+  }
+}
