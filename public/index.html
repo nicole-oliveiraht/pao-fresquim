@@ -638,6 +638,69 @@ body {
   #screen-menu .screen-body { padding: 24px 16px 48px; }
 }
 
+@media (max-width: 640px) {
+  /* ── Header ── */
+  .app-header { height: 54px; padding: 0 12px; gap: 8px; }
+  .header-logo { font-size: 17px; }
+  .header-title { display: none; }
+  .header-user { gap: 6px; }
+  .header-user-role { display: none; }
+  .header-user-avatar { width: 28px; height: 28px; font-size: 13px; }
+  #btn-header-minha-senha { display: none; }
+
+  /* ── Body padding ── */
+  .screen-body { padding: 14px 12px 36px !important; }
+  #screen-menu .screen-body { padding: 16px 12px 36px !important; }
+  #screen-venda .screen-body { padding: 12px !important; }
+
+  /* ── Greeting ── */
+  .menu-greeting { margin-bottom: 18px; }
+  .menu-greeting-title { font-size: 22px; }
+  .menu-greeting-sub { font-size: 13px; }
+  .menu-status { padding: 10px 12px; gap: 10px; }
+  .status-time { display: none; }
+
+  /* ── Cards ── */
+  .prod-card { padding: 14px; }
+  .prod-card-title { font-size: 15px; margin-bottom: 12px; }
+
+  /* ── Tabs: scroll horizontal sem barra ── */
+  .prod-tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .prod-tabs::-webkit-scrollbar { display: none; }
+  .prod-tab { white-space: nowrap; font-size: 13px; padding: 9px 14px; }
+
+  /* ── Tabelas ── */
+  .prod-table { font-size: 12px; }
+  .prod-table thead th { padding: 8px 9px; font-size: 10px; }
+  .prod-table tbody td { padding: 8px 9px; }
+
+  /* ── Filtros em coluna ── */
+  #rel-filtros-wrap, #nf-filtros-wrap {
+    flex-direction: column;
+    gap: 10px;
+  }
+  #rel-filtros-wrap .prod-field,
+  #nf-filtros-wrap .prod-field { min-width: 0 !important; width: 100%; }
+  #rel-filtros-wrap > button,
+  #nf-filtros-wrap > button { width: 100%; }
+
+  /* ── Grids de resumo 3-col → 1-col ── */
+  #rel-resumo-grid { grid-template-columns: 1fr !important; gap: 10px !important; }
+  #nf-resumo-wrap  { grid-template-columns: 1fr !important; gap: 10px !important; }
+
+  /* ── Venda: total menor ── */
+  #vnd-total { font-size: 30px !important; }
+
+  /* ── Ações ── */
+  .prod-acoes { flex-wrap: wrap; }
+  .prod-acoes .btn-sec, .prod-acoes .btn-prim { flex: 1 1 auto; }
+}
+
 @media (max-width: 480px) {
   .menu-grid { grid-template-columns: 1fr 1fr; gap: 11px; }
   .menu-card  { padding: 20px 12px 18px; }
@@ -1044,7 +1107,7 @@ body {
         <div class="header-user-role" id="header-perfil">—</div>
       </div>
     </div>
-    <button class="btn-sec" style="padding:6px 14px;font-size:13px" onclick="abrirModalMinhaSenha()">🔐 Minha Senha</button>
+    <button id="btn-header-minha-senha" class="btn-sec" style="padding:6px 14px;font-size:13px" onclick="abrirModalMinhaSenha()">🔐 Minha Senha</button>
     <button class="btn-logout" onclick="fazerLogout()">Sair</button>
   </header>
 
@@ -1763,7 +1826,7 @@ body {
     <div id="rel-painel-0">
       <div class="prod-card">
         <div class="prod-card-title">📅 Filtros</div>
-        <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end">
+        <div id="rel-filtros-wrap" style="display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end">
           <div class="prod-field" style="min-width:160px"><label>De</label><input id="rel-de" type="date"/></div>
           <div class="prod-field" style="min-width:160px"><label>Até</label><input id="rel-ate" type="date"/></div>
           <div class="prod-field" style="min-width:180px">
@@ -1788,7 +1851,7 @@ body {
 
       <div id="rel-resultado" style="display:none">
         <!-- Cards de resumo -->
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px">
+        <div id="rel-resumo-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px">
           <div class="prod-card" style="text-align:center;padding:20px">
             <div style="font-size:11px;font-weight:800;color:var(--ink-lt);text-transform:uppercase;letter-spacing:.08em">Total de Vendas</div>
             <div id="rel-total-vendas" style="font-family:var(--font-display);font-size:34px;font-weight:900;color:var(--caramel-dk)">0</div>
@@ -2143,7 +2206,7 @@ body {
     <!-- Filtros -->
     <div class="prod-card">
       <div class="prod-card-title">🔍 Buscar Notas Fiscais</div>
-      <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end">
+      <div id="nf-filtros-wrap" style="display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end">
         <div class="prod-field" style="min-width:150px"><label>De</label><input id="nf-de" type="date"/></div>
         <div class="prod-field" style="min-width:150px"><label>Até</label><input id="nf-ate" type="date"/></div>
         <div class="prod-field" style="min-width:180px">
